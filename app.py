@@ -178,9 +178,9 @@ mode = st.sidebar.radio(
 # Backend API
 BACKEND_URL = "http://127.0.0.1:8000"
 
-# =======================================================
+
 # MODE 1: Preference-Based Recommendation
-# =======================================================
+
 if mode == "Preference-Based Recommendation":
     st.header("Preference-Based Recommendation")
     st.write("Customize your preferences below and get AI-based college suggestions.")
@@ -244,9 +244,9 @@ if mode == "Preference-Based Recommendation":
             else:
                 st.error("Unable to get recommendations. Please check backend connection.")
 
-# =======================================================
+
 # MODE 2: College Name-Based Recommendation
-# =======================================================
+
 elif mode == "College Name-Based Recommendation":
     st.header("College Name-Based Recommendation")
     st.write("Select a college below to find others with similar attributes and ranking.")
