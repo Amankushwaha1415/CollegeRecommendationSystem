@@ -4,3 +4,6 @@ scikit-learn
 jupyter
 nltk
 streamlit
+sentence-transformers
+fastapi
+uvicorn
