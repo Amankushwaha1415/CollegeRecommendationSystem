@@ -5,9 +5,9 @@ import pandas as pd
 import requests
 from sklearn.metrics.pairwise import cosine_similarity
 
-# -------------------------------------------------------
-# 📦 Load Data and Models
-# -------------------------------------------------------
+
+#  Load Data and Models
+
 df = pickle.load(open('data.pkl', 'rb'))
 tfidf = pickle.load(open('tfidf.pkl', 'rb'))
 Vectors_model = pickle.load(open('Vectors_model.pkl', 'rb'))
@@ -18,9 +18,9 @@ collegeData = pickle.load(open('D:\\CollegeRecommendationSystem\\DummyModel\\col
 similarity = pickle.load(open('D:\\CollegeRecommendationSystem\\DummyModel\\similarity.pkl', 'rb'))
 college_list1 = collegeData['College Name'].values
 
-# -------------------------------------------------------
-# 💅 Custom Styling
-# -------------------------------------------------------
+
+#  Custom Styling
+
 st.set_page_config(page_title="College Recommendation System", page_icon="🎓", layout="wide")
 
 st.markdown("""
@@ -62,19 +62,28 @@ st.markdown("""
             border-radius: 8px !important;
         }
         h1, h2, h3, h4 {
-            color: #1a237e;
+            color: #000000;
         }
         .css-1v0mbdj {
             background-color: #fafafa !important;
             border-radius: 12px !important;
             padding: 20px !important;
         }
+        .stSelectbox label,
+        .stMultiSelect label,
+        .stRadio label,
+        .stTextInput label,
+        .stSlider label {
+            color: #000000 !important;       /* black */
+            font-weight: 900 !important;     /* extra bold */
+            font-size: 18px !important;      /* slightly bigger */
+}
     </style>
 """, unsafe_allow_html=True)
 
-# -------------------------------------------------------
-# 🧠 Helper Functions
-# -------------------------------------------------------
+
+#  Helper Functions
+
 def unique_elements_from_column(df_column):
     unique_elements = set()
     for lst in df_column:
@@ -93,10 +102,8 @@ def find_location(data):
         dict_city_state[state] = list(cities)
     return dict_city_state
 
+#  Categorize Courses (Smart Integrated Detection)
 
-# -------------------------------------------------------
-# 🧩 Categorize Courses (Smart Integrated Detection)
-# -------------------------------------------------------
 def categorize_courses(course_list):
     def match_patterns(course, patterns):
         course_lower = course.lower()
@@ -142,9 +149,8 @@ def categorize_courses(course_list):
     return btech_be, mtech_me, integrated, bsc, msc, bca_mca, phd, diploma, others
 
 
-# -------------------------------------------------------
-# 📊 Prepare Data
-# -------------------------------------------------------
+#  Prepare Data
+
 uniqueCourses = list(unique_elements_from_column(df['Courses']))
 unique_facilities = list(unique_elements_from_column(df['Facilities']))
 unique_city_state_dict = find_location(df)
@@ -156,18 +162,17 @@ gender_accepted = ['Co-Ed', 'Female', 'Male']
 
 btech_be, mtech_me, integrated, bsc, msc, bca_mca, phd, diploma, others = categorize_courses(uniqueCourses)
 
-# -------------------------------------------------------
-# 🧭 Header Section
-# -------------------------------------------------------
-st.markdown("<div class='main-title'>🎓 College Recommendation System</div>", unsafe_allow_html=True)
+
+# Header Section
+
+st.markdown("<div class='main-title'>College Recommendation System</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Find the best colleges based on your preferences or explore similar colleges easily.</div>", unsafe_allow_html=True)
 
-# -------------------------------------------------------
-# 🎛 Sidebar Mode Selector
-# -------------------------------------------------------
+# Sidebar Mode Selector
+
 mode = st.sidebar.radio(
-    "🔍 Choose Recommendation Mode",
-    ["📋 Preference-Based Recommendation", "🏫 College Name-Based Recommendation"]
+    "Choose Recommendation Mode",
+    ["Preference-Based Recommendation", "College Name-Based Recommendation"]
 )
 
 # Backend API
@@ -176,8 +181,8 @@ BACKEND_URL = "http://127.0.0.1:8000"
 # =======================================================
 # MODE 1: Preference-Based Recommendation
 # =======================================================
-if mode == "📋 Preference-Based Recommendation":
-    st.header("📋 Preference-Based Recommendation")
+if mode == "Preference-Based Recommendation":
+    st.header("Preference-Based Recommendation")
     st.write("Customize your preferences below and get AI-based college suggestions.")
 
     st.markdown("---")
@@ -185,40 +190,39 @@ if mode == "📋 Preference-Based Recommendation":
     # --- 3 columns for course selection ---
     col1, col2, col3 = st.columns(3)
     with col1:
-        selected_btech_be = st.multiselect("🎓 B.Tech / B.E Courses", sorted(btech_be))
-        selected_bsc = st.multiselect("🎓 B.Sc Courses", sorted(bsc))
-        selected_bca_mca = st.multiselect("💻 BCA / MCA Courses", sorted(bca_mca))
+        selected_btech_be = st.multiselect("B.Tech / B.E Courses", sorted(btech_be))
+        selected_bsc = st.multiselect("B.Sc Courses", sorted(bsc))
+        selected_bca_mca = st.multiselect("BCA / MCA Courses", sorted(bca_mca))
     with col2:
-        selected_mtech_me = st.multiselect("🎓 M.Tech / M.E Courses", sorted(mtech_me))
-        selected_msc = st.multiselect("🎓 M.Sc Courses", sorted(msc))
-        selected_diploma = st.multiselect("🎓 Diploma Courses", sorted(diploma))
+        selected_mtech_me = st.multiselect("M.Tech / M.E Courses", sorted(mtech_me))
+        selected_msc = st.multiselect("M.Sc Courses", sorted(msc))
+        selected_diploma = st.multiselect("Diploma Courses", sorted(diploma))
     with col3:
-        selected_integrated = st.multiselect("🔗 Integrated B.Tech + M.Tech Courses", sorted(integrated))
-        selected_phd = st.multiselect("🎓 Ph.D Courses", sorted(phd))
-        selected_others = st.multiselect("📚 Other Courses", sorted(others))
-
+        selected_integrated = st.multiselect("Integrated B.Tech + M.Tech Courses", sorted(integrated))
+        selected_phd = st.multiselect("Ph.D Courses", sorted(phd))
+        selected_others = st.multiselect("Other Courses", sorted(others))
     selected_courses = (
         selected_btech_be + selected_mtech_me + selected_integrated +
         selected_bsc + selected_msc + selected_bca_mca +
         selected_phd + selected_diploma + selected_others
     )
 
-    selected_facilities = st.multiselect("🏢 Select Facilities", sorted(unique_facilities))
+    selected_facilities = st.multiselect("Select Facilities", sorted(unique_facilities))
 
     st.markdown("---")
 
     # --- 4 columns for radio buttons ---
     colA, colB, colC, colD = st.columns(4)
-    with colA: selected_fees = st.radio("💰 Fee Range", fees_options)
-    with colB: selected_college_type = st.radio("🏫 College Type", college_type)
-    with colC: selected_establishment = st.radio("📅 Establishment Type", establishment_type)
-    with colD: selected_gender = st.radio("🚻 Gender Accepted", gender_accepted)
+    with colA: selected_fees = st.radio("Fee Range", fees_options)
+    with colB: selected_college_type = st.radio("College Type", college_type)
+    with colC: selected_establishment = st.radio("Establishment Type", establishment_type)
+    with colD: selected_gender = st.radio("Gender Accepted", gender_accepted)
 
-    selected_state = st.selectbox("🌍 Select State", list(unique_city_state_dict.keys()))
+    selected_state = st.selectbox("Select State", list(unique_city_state_dict.keys()))
 
     st.markdown("---")
 
-    if st.button("✨ Recommend Colleges"):
+    if st.button("Recommend Colleges"):
         payload = {
             "courses": selected_courses,
             "facilities": selected_facilities,
@@ -229,36 +233,35 @@ if mode == "📋 Preference-Based Recommendation":
             "state": selected_state
         }
 
-        with st.spinner("⏳ Finding best matches..."):
+        with st.spinner("Finding best matches..."):
             response = requests.post(f"{BACKEND_URL}/recommend/preferences", json=payload)
             if response.status_code == 200:
                 recs = response.json()["recommendations"]
-                st.success("✅ Recommendations ready!")
-                st.markdown("### 🎯 Top Recommended Colleges")
+                st.success("Recommendations ready!")
+                st.markdown("### Top Recommended Colleges")
                 for i in recs:
-                    st.info(f"🏫 **{i['college_name']}**, {i['city']}, {i['state']}  _(Similarity: {i['similarity']})_")
+                    st.info(f"**{i['college_name']}**, {i['city']}, {i['state']}  _(Similarity: {i['similarity']})_")
             else:
-                st.error("⚠️ Unable to get recommendations. Please check backend connection.")
-
+                st.error("Unable to get recommendations. Please check backend connection.")
 
 # =======================================================
 # MODE 2: College Name-Based Recommendation
 # =======================================================
-elif mode == "🏫 College Name-Based Recommendation":
-    st.header("🏫 College Name-Based Recommendation")
+elif mode == "College Name-Based Recommendation":
+    st.header("College Name-Based Recommendation")
     st.write("Select a college below to find others with similar attributes and ranking.")
 
     st.markdown("---")
 
-    selected_college_name = st.selectbox("🔍 Search for a College", college_list1)
+    selected_college_name = st.selectbox("Search for a College", college_list1)
 
-    if st.button("✨ Show Similar Colleges"):
-        with st.spinner("🔎 Finding similar colleges..."):
+    if st.button("Show Similar Colleges"):
+        with st.spinner("Finding similar colleges..."):
             response = requests.post(f"{BACKEND_URL}/recommend/college", json={"college_name": selected_college_name})
             if response.status_code == 200:
                 recs = response.json()["recommendations"]
-                st.markdown("### 🎯 Top 10 Similar Colleges:")
+                st.markdown("### Top 10 Similar Colleges:")
                 for i in recs:
-                    st.success(f"🏫 {i['college_name']}, {i['city']}, {i['state']}")
+                    st.success(f"{i['college_name']}, {i['city']}, {i['state']}")
             else:
-                st.error("⚠️ Could not connect to backend.")
+                st.error("Could not connect to backend.")
